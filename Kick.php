@@ -8,8 +8,10 @@ class Kicker
     require('kick.ini');
       );
   }
+  
 
-  public $tasks;
+  private $tasks;
+  private $data;
 }
 
 ?>
