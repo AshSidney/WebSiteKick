@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+phpunit_config_file=/WebSiteKick/test/phpunit.xml
+preload_script=/WebSiteKick/test/makegood.php
+test_file_pattern=
+test_folders=/WebSiteKick/test
+testing_framework=PHPUnit

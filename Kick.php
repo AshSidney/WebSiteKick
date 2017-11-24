@@ -11,7 +11,7 @@ $data = file_exist($confFile) ? simplexml_load_file($confFile)
   : new SimpleXMLElement("<?xml version='1.0' standalone='yes'?><configurations/>");*/
 $data = "XML";
     
-for ($tasks as $task)
+foreach ($tasks as $task)
   $task->execute($data);
   
 ?>
