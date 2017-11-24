@@ -48,6 +48,11 @@ class WPComment
   {
     $this->db = $db;
   }
+
+  void load ($xml)
+  {
+    
+  }
 }
 
 
@@ -60,7 +65,7 @@ class Kicker
       );
     
     $this->data = file_exist($this->confFile) ? simplexml_load_file($this->confFile)
-      : new SimpleXMLElement("<?xml version='1.0' standalone='yes'?>");
+      : new SimpleXMLElement("<?xml version='1.0' standalone='yes'?><configurations/>");
     
     for ($this->tasks as $task)
       $task->load($this->data);
