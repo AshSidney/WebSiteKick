@@ -61,7 +61,7 @@ class Kicker
   void __construct ()
   {
     $this->tasks = array(
-    require('kick.ini');
+    require('Kick.ini');
       );
     
     $this->data = file_exist($this->confFile) ? simplexml_load_file($this->confFile)
