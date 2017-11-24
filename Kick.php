@@ -49,31 +49,22 @@ class WPComment
     $this->db = $db;
   }
 
-  void load ($xml)
+  void execute ($xml)
   {
-    
+    echo "stub for execution";
   }
 }
 
 
-class Kicker
-{
-  void __construct ()
-  {
-    $this->tasks = array(
-    require('Kick.ini');
-      );
+$tasks = array(
+require('Kick.ini');
+  );
     
-    $this->data = file_exist($this->confFile) ? simplexml_load_file($this->confFile)
-      : new SimpleXMLElement("<?xml version='1.0' standalone='yes'?><configurations/>");
+$confFile = "Kick.xml";
+$data = file_exist($confFile) ? simplexml_load_file($confFile)
+  : new SimpleXMLElement("<?xml version='1.0' standalone='yes'?><configurations/>");
     
-    for ($this->tasks as $task)
-      $task->load($this->data);
-  }
+for ($tasks as $task)
+  $task->execute($data);
   
-  private $tasks;
-  private $data;
-  private $confFile = "kick.xml";
-}
-
 ?>
