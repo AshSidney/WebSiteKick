@@ -1,10 +1,6 @@
 <?php
 
-require 'WPComment.php';
-
-//require 'Kick.ini';
-$tasks = array(
-new WPComment(new DBManager("db name", "server name", "user name", "password")) );
+require 'Kick.ini';
     
 /*$confFile = "Kick.xml";
 $data = file_exist($confFile) ? simplexml_load_file($confFile)
