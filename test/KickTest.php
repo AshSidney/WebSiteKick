@@ -1,13 +1,19 @@
 <?php
 
+require_once 'KickTasksMock.php';
 require_once 'OutputBuffer.php';
 
 use PHPUnit\Framework\TestCase;
 
-class serverTest extends TestCase
+class KickTest extends TestCase
 {
-  public function testServiceVersion ()
+  public function testKickTasksEcho ()
   {
+    KickTasksMock::$tasks = array(new TestEchoString("first "),
+      new TestEchoString("second one; "),
+      new TestEchoString("the last")
+    );
+    
     $output = new OutputBuffer();
     $output->start();
     
@@ -15,7 +21,7 @@ class serverTest extends TestCase
     
     $output->stop();
     
-    $this->assertEquals("stub for execution", $output->getBuffer());
+    $this->assertEquals("first second one; the last", $output->getBuffer());
   }
 }
   
