@@ -15,7 +15,7 @@ class serverTest extends TestCase
     
     $output->stop();
     
-    $this->assertEquals($testDb->getSchema()->getVersion(), $output->getBuffer());
+    $this->assertEquals("stub for execution", $output->getBuffer());
   }
 }
   

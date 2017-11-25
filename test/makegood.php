@@ -2,6 +2,8 @@
 
 require_once 'D:\DevTools\phpunit\phpunit-5.7.21.phar';
 
-copy('src/Kick-test.ini', 'Kick.ini');
+$iniFile = __DIR__ . '/../Kick.ini';
+if (!file_exists($iniFile))
+  copy(__DIR__ . '/Kick-test.ini', $iniFile);
 
 ?>
