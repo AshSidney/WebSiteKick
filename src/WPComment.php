@@ -33,13 +33,14 @@ class WPComment
     if ($row = $queryMax->fetch())
     {
       $newAwaitingMax = intval($row[0]);
-      if ($currMax < $newApprovedMax)
+      if ($currMax < $newAwaitingMax)
       {
-        if ($newMax < $newApprovedMax)
-          $newMax = $newApprovedMax;
+        if ($newMax < $newAwaitingMax)
+          $newMax = $newAwaitingMax;
         echo $this->awaitingMessage;
       }
     }
+    $xml->wpcomment = $newMax;
   }
 }
 

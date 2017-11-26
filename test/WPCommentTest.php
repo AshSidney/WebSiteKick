@@ -30,16 +30,24 @@ class WPCommentTest extends TestCase
       comment_type varchar(20) NOT NULL DEFAULT '',
       comment_parent bigint(20) unsigned NOT NULL DEFAULT '0',
       user_id bigint(20) unsigned NOT NULL DEFAULT '0')");
+  }
+  
+  public function setUp()
+  {
+    self::$testDb->query("DELETE FROM wp_comments");
     self::$testDb->query("INSERT INTO wp_comments (
       comment_ID, comment_author, comment_content, comment_approved)
       VALUES (5, 'user1', 'first comment', '1'),
              (9, 'newfriend', 'want to ask something', '0'),
              (13, 'xy', 'anonymous offer', 'spam'),
-             (20, 'admin', 'moderating', '0')");
+             (18, 'oldfriend', 'congrats', '0'),
+             (20, 'admin', 'moderating', '1')");
   }
   
-  public function testNewCommentNoPrevData ()
+  public function testNewCommentsNoStartData ()
   {
+    self::$testDb->query("DELETE FROM wp_comments WHERE comment_ID > 13");
+    
     $testCom = new WPComment(self::$testDb, "new approved\n", "new comment awaiting\n");
     
     $xml = new SimpleXMLElement("<?xml version='1.0' standalone='yes'?>
@@ -53,6 +61,81 @@ class WPCommentTest extends TestCase
     $output->stop();
     
     $this->assertEquals("new approved\nnew comment awaiting\n", $output->getBuffer());
+    $this->assertEquals(9, intval($xml->wpcomment));
+  }
+  
+  public function testBothTypesOfComments ()
+  {
+    $testCom = new WPComment(self::$testDb, "new approved\n", "new comment awaiting\n");
+    
+    $xml = new SimpleXMLElement("<?xml version='1.0' standalone='yes'?>
+      <configurations><wpcomment>12</wpcomment></configurations>");
+    
+    $output = new OutputBuffer();
+    $output->start();
+    
+    $testCom->execute($xml);
+    
+    $output->stop();
+    
+    $this->assertEquals("new approved\nnew comment awaiting\n", $output->getBuffer());
+    $this->assertEquals(20, intval($xml->wpcomment));
+  }
+  
+  public function testNewApprovedComment ()
+  {
+    $testCom = new WPComment(self::$testDb, "new approved\n", "new comment awaiting\n");
+    
+    $xml = new SimpleXMLElement("<?xml version='1.0' standalone='yes'?>
+      <configurations><wpcomment>18</wpcomment></configurations>");
+    
+    $output = new OutputBuffer();
+    $output->start();
+    
+    $testCom->execute($xml);
+    
+    $output->stop();
+    
+    $this->assertEquals("new approved\n", $output->getBuffer());
+    $this->assertEquals(20, intval($xml->wpcomment));
+  }
+  
+  public function testNewAwaitingComment ()
+  {
+    self::$testDb->query("DELETE FROM wp_comments WHERE comment_ID = 20");
+    
+    $testCom = new WPComment(self::$testDb, "new approved\n", "new comment awaiting\n");
+    
+    $xml = new SimpleXMLElement("<?xml version='1.0' standalone='yes'?>
+      <configurations><wpcomment>13</wpcomment></configurations>");
+    
+    $output = new OutputBuffer();
+    $output->start();
+    
+    $testCom->execute($xml);
+    
+    $output->stop();
+    
+    $this->assertEquals("new comment awaiting\n", $output->getBuffer());
+    $this->assertEquals(18, intval($xml->wpcomment));
+  }
+  
+  public function testNoNewComment ()
+  {
+    $testCom = new WPComment(self::$testDb, "new approved\n", "new comment awaiting\n");
+    
+    $xml = new SimpleXMLElement("<?xml version='1.0' standalone='yes'?>
+      <configurations><wpcomment>20</wpcomment></configurations>");
+    
+    $output = new OutputBuffer();
+    $output->start();
+    
+    $testCom->execute($xml);
+    
+    $output->stop();
+    
+    $this->assertEquals("", $output->getBuffer());
+    $this->assertEquals(20, intval($xml->wpcomment));
   }
 }
 
