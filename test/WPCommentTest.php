@@ -44,15 +44,8 @@ class WPCommentTest extends TestCase
              (20, 'admin', 'moderating', '1')");
   }
   
-  public function testNewCommentsNoStartData ()
+  function execute ($testCom, $xml)
   {
-    self::$testDb->query("DELETE FROM wp_comments WHERE comment_ID > 13");
-    
-    $testCom = new WPComment(self::$testDb, "new approved\n", "new comment awaiting\n");
-    
-    $xml = new SimpleXMLElement("<?xml version='1.0' standalone='yes'?>
-      <configurations/>");
-    
     $output = new OutputBuffer();
     $output->start();
     
@@ -60,7 +53,18 @@ class WPCommentTest extends TestCase
     
     $output->stop();
     
-    $this->assertEquals("new approved\nnew comment awaiting\n", $output->getBuffer());
+    return $output->getBuffer();
+  }
+  
+  public function testNewCommentsNoStartData ()
+  {
+    self::$testDb->query("DELETE FROM wp_comments WHERE comment_ID > 13");
+    
+    $testCom = new WPComment(self::$testDb, "new approved\n", "new comment awaiting\n");
+    
+    $xml = new SimpleXMLElement("<?xml version='1.0' standalone='yes'?><configurations/>");
+    
+    $this->assertEquals("new approved\nnew comment awaiting\n", $this->execute($testCom, $xml));
     $this->assertEquals(9, intval($xml->wpcomment));
   }
   
@@ -71,14 +75,7 @@ class WPCommentTest extends TestCase
     $xml = new SimpleXMLElement("<?xml version='1.0' standalone='yes'?>
       <configurations><wpcomment>12</wpcomment></configurations>");
     
-    $output = new OutputBuffer();
-    $output->start();
-    
-    $testCom->execute($xml);
-    
-    $output->stop();
-    
-    $this->assertEquals("new approved\nnew comment awaiting\n", $output->getBuffer());
+    $this->assertEquals("new approved\nnew comment awaiting\n", $this->execute($testCom, $xml));
     $this->assertEquals(20, intval($xml->wpcomment));
   }
   
@@ -89,14 +86,7 @@ class WPCommentTest extends TestCase
     $xml = new SimpleXMLElement("<?xml version='1.0' standalone='yes'?>
       <configurations><wpcomment>18</wpcomment></configurations>");
     
-    $output = new OutputBuffer();
-    $output->start();
-    
-    $testCom->execute($xml);
-    
-    $output->stop();
-    
-    $this->assertEquals("new approved\n", $output->getBuffer());
+    $this->assertEquals("new approved\n", $this->execute($testCom, $xml));
     $this->assertEquals(20, intval($xml->wpcomment));
   }
   
@@ -109,14 +99,7 @@ class WPCommentTest extends TestCase
     $xml = new SimpleXMLElement("<?xml version='1.0' standalone='yes'?>
       <configurations><wpcomment>13</wpcomment></configurations>");
     
-    $output = new OutputBuffer();
-    $output->start();
-    
-    $testCom->execute($xml);
-    
-    $output->stop();
-    
-    $this->assertEquals("new comment awaiting\n", $output->getBuffer());
+    $this->assertEquals("new comment awaiting\n", $this->execute($testCom, $xml));
     $this->assertEquals(18, intval($xml->wpcomment));
   }
   
@@ -127,14 +110,7 @@ class WPCommentTest extends TestCase
     $xml = new SimpleXMLElement("<?xml version='1.0' standalone='yes'?>
       <configurations><wpcomment>20</wpcomment></configurations>");
     
-    $output = new OutputBuffer();
-    $output->start();
-    
-    $testCom->execute($xml);
-    
-    $output->stop();
-    
-    $this->assertEquals("", $output->getBuffer());
+    $this->assertEquals("", $this->execute($testCom, $xml));
     $this->assertEquals(20, intval($xml->wpcomment));
   }
 }
